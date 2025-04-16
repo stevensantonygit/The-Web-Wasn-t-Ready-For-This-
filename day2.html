@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Web Wasn't Ready For This - Day 2</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Sans+MS&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+  overflow-x: hidden;
+}
+
+header {
+  text-align: center;
+  padding: 2rem 0;
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.day-counter {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.instructions {
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ff00ff;
+  margin: 1rem 0;
+}
+
+.content-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.runaway-text {
+  position: relative;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.5s ease, opacity 0.3s ease;
+  line-height: 1.6;
+}
+
+.runaway-text:nth-child(odd) {
+  border-left: 5px solid #ff00ff;
+}
+
+.runaway-text:nth-child(even) {
+  border-left: 5px solid #00ffff;
+}
+
+.secret-message {
+  text-align: center;
+  padding: 1rem;
+  background-color: #ffff88;
+  border: 2px dashed #ff00ff;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 2rem auto;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background-color: #333;
+  color: white;
+  margin-top: 2rem;
+}
+
+.footer-link {
+  color: #00ffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+  color: #ff00ff;
+}
+
+.footer-text {
+  font-style: italic;
+}
+
+@keyframes shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-10px, -10px) rotate(-3deg); }
+  40% { transform: translate(10px, -10px) rotate(3deg); }
+  60% { transform: translate(-10px, 10px) rotate(-3deg); }
+  80% { transform: translate(10px, 10px) rotate(3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>The Web Wasn't Ready For This</h1>
+    <div class="day-counter">Day 2: Text That Runs Away</div>
+  </header>
+
+  <div class="instructions">Try to read the text below... if you can!</div>
+  
+  <div class="content-container">
+    <p class="runaway-text">This is a normal paragraph that you might want to read. It contains some interesting information about the nature of the universe and the human condition. Unfortunately, it doesn't want to be read.</p>
+    
+    <p class="runaway-text">Web design has always been about usability and accessibility. This website proudly ignores those principles in favor of chaos and confusion. Why make things easy when they can be impossible?</p>
+    
+    <p class="runaway-text">Did you know that the average person spends about 7 hours looking at screens each day? After experiencing this website, you might want to reconsider your screen time habits and go touch some grass.</p>
+    
+    <p class="runaway-text">The more you try to focus on this text, the more it will resist your attempts. It's like trying to catch a soap bubble or hold onto a dream after waking up. Some things aren't meant to be captured.</p>
+    
+    <p class="runaway-text">If you've managed to read this far, you're either incredibly persistent or you've discovered the secret: the text only runs when you move your cursor. Stay perfectly still, and the words might just behave themselves.</p>
+  </div>
+
+  <div class="secret-message">Congratulations! You've discovered that the text calms down if you stop moving your cursor. Patience defeats chaos.</div>
+
+  <footer>
+    <a href="day1.html" class="footer-link">← Day 1: The Impossible Button</a>
+    <span class="footer-text">A journey into digital chaos</span>
+    <a href="day3.html" class="footer-link">Day 3: Form From Hell →</a>
+  </footer>
+
+  <script>document.addEventListener('DOMContentLoaded', function() {
+    const runawayTexts = document.querySelectorAll('.runaway-text');
+    const secretMessage = document.querySelector('.secret-message');
+    
+    let mouseX = 0;
+    let mouseY = 0;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    let mouseSpeed = 0;
+    let mouseMoving = false;
+    let mouseStillTimeout;
+    let activeParagraphIndex = -1;
+    
+    document.addEventListener('mousemove', function(e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      const dx = mouseX - lastMouseX;
+      const dy = mouseY - lastMouseY;
+      mouseSpeed = Math.sqrt(dx * dx + dy * dy);
+      
+      lastMouseX = mouseX;
+      lastMouseY = mouseY;
+      
+      mouseMoving = true;
+      clearTimeout(mouseStillTimeout);
+      
+      mouseStillTimeout = setTimeout(function() {
+        mouseMoving = false;
+        calmDownText();
+      }, 1500);
+      
+      checkProximity();
+    });
+    
+    document.addEventListener('mouseout', function() {
+      setTimeout(function() {
+        mouseMoving = false;
+        calmDownText();
+      }, 1000);
+    });
+    
+    function checkProximity() {
+      if (!mouseMoving) return;
+      
+      runawayTexts.forEach((paragraph, index) => {
+        const rect = paragraph.getBoundingClientRect();
+        
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const distance = Math.sqrt(
+          Math.pow(mouseX - centerX, 2) + 
+          Math.pow(mouseY - centerY, 2)
+        );
+        
+        if (distance < 200) {
+          runAway(paragraph, index);
+          activeParagraphIndex = index;
+        }
+      });
+    }
+    
+    function runAway(paragraph, index) {
+      const rect = paragraph.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      let dirX = centerX - mouseX;
+      let dirY = centerY - mouseY;
+      
+      const length = Math.sqrt(dirX * dirX + dirY * dirY);
+      if (length > 0) {
+        dirX = dirX / length * (mouseSpeed * 0.5);
+        dirY = dirY / length * (mouseSpeed * 0.5);
+      }
+      
+      const randomX = (Math.random() - 0.5) * 50 * (index % 3 + 1);
+      const randomY = (Math.random() - 0.5) * 50 * ((index + 1) % 3 + 1);
+      
+      const rotation = (Math.random() - 0.5) * mouseSpeed * 0.5;
+      
+      paragraph.style.transition = 'transform 0.3s ease';
+      paragraph.style.transform = `translate(${dirX + randomX}px, ${dirY + randomY}px) rotate(${rotation}deg)`;
+      paragraph.style.opacity = Math.max(0.5, 1 - (mouseSpeed * 0.01));
+      
+      if (mouseSpeed > 50) {
+        paragraph.style.animation = 'shake 0.5s ease';
+        setTimeout(() => {
+          paragraph.style.animation = '';
+        }, 500);
+      }
+    }
+    
+    function calmDownText() {
+      runawayTexts.forEach(paragraph => {
+        paragraph.style.transition = 'transform 1s ease, opacity 1s ease';
+        paragraph.style.transform = 'translate(0, 0) rotate(0deg)';
+        paragraph.style.opacity = '1';
+      });
+      
+      if (activeParagraphIndex >= 0) {
+        secretMessage.style.opacity = '1';
+      }
+    }
+    
+    runawayTexts.forEach((paragraph, index) => {
+      const randomX = (Math.random() - 0.5) * 10;
+      const randomY = (Math.random() - 0.5) * 10;
+      paragraph.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    });
+  });</script>
+</body>
+</html>
